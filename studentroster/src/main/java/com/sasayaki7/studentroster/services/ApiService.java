@@ -6,15 +6,19 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.sasayaki7.studentroster.models.Contact;
+import com.sasayaki7.studentroster.models.Dorm;
 import com.sasayaki7.studentroster.models.Student;
 import com.sasayaki7.studentroster.repositories.ContactRepository;
+import com.sasayaki7.studentroster.repositories.DormRepository;
 import com.sasayaki7.studentroster.repositories.StudentRepository;
 
 @Service
 public class ApiService {
 	private final ContactRepository contactRepo;
 	private final StudentRepository studentRepo;
-	public ApiService(ContactRepository contactRepo, StudentRepository studentRepo) {
+	private final DormRepository dormRepo;
+	public ApiService(ContactRepository contactRepo, StudentRepository studentRepo, DormRepository dormRepo) {
+		this.dormRepo=dormRepo;
 		this.contactRepo = contactRepo;
 		this.studentRepo = studentRepo;
 	}
@@ -63,6 +67,44 @@ public class ApiService {
 		else {
 			return null;
 		}
+	}
+	
+	public Student removeDorm(Student b) {
+		b.setDorm(null);
+		this.updateStudent(b);
+		return b;
+	}
+	
+	public Student addDorm(Student b, Dorm d) {
+		b.setDorm(d);
+		this.updateStudent(b);
+		return b;
+	}
+	
+	public Dorm createDorm(Dorm d) {
+		return dormRepo.save(d);
+	}
+	
+	public Dorm updateDorm(Dorm d) {
+		return dormRepo.save(d);
+	}
+	
+	public Dorm findDorm(Long id) {
+		Optional<Dorm> optionalDorm = dormRepo.findById(id);
+		if(optionalDorm.isPresent()) {
+			return optionalDorm.get();
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public void deleteDorm(Long id) {
+		dormRepo.deleteById(id);
+	}
+	
+	public List<Dorm> getAllDorms(){
+		return dormRepo.findAll();
 	}
 	
 	public Contact updateContact(Contact b) {

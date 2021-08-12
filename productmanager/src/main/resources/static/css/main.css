@@ -1,0 +1,13 @@
+@charset "ISO-8859-1";
+
+.cols-setup{
+	display: flex;
+}
+
+.right-col{
+	flex: 1;
+}
+
+.left-col{
+	flex: 1;
+}

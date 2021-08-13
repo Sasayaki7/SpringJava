@@ -1,0 +1,17 @@
+@charset "ISO-8859-1";
+
+.input-row{
+	display: flex;
+}
+
+.split-col{
+	display:flex;
+}
+
+.left-col{
+	flex: 1;
+}
+
+.right-col{
+	flex: 1;
+}

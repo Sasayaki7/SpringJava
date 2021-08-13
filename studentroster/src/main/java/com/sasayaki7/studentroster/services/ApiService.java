@@ -5,9 +5,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.sasayaki7.studentroster.models.Classes;
 import com.sasayaki7.studentroster.models.Contact;
 import com.sasayaki7.studentroster.models.Dorm;
 import com.sasayaki7.studentroster.models.Student;
+import com.sasayaki7.studentroster.repositories.ClassRepository;
 import com.sasayaki7.studentroster.repositories.ContactRepository;
 import com.sasayaki7.studentroster.repositories.DormRepository;
 import com.sasayaki7.studentroster.repositories.StudentRepository;
@@ -17,10 +19,12 @@ public class ApiService {
 	private final ContactRepository contactRepo;
 	private final StudentRepository studentRepo;
 	private final DormRepository dormRepo;
-	public ApiService(ContactRepository contactRepo, StudentRepository studentRepo, DormRepository dormRepo) {
+	private final ClassRepository classRepo;
+	public ApiService(ContactRepository contactRepo, StudentRepository studentRepo, DormRepository dormRepo, ClassRepository classRepo) {
 		this.dormRepo=dormRepo;
 		this.contactRepo = contactRepo;
 		this.studentRepo = studentRepo;
+		this.classRepo = classRepo;
 	}
 	
 	public List<Student> allStudents(){
@@ -115,4 +119,36 @@ public class ApiService {
 	public void deleteContact(Long id) {
 		contactRepo.deleteById(id);
 	}
+	
+	public List<Classes> allClasses(){
+		return classRepo.findAll();
+	}
+	
+	public Classes createClass(Classes c) {
+		return classRepo.save(c);
+	}
+	
+	public Classes findClasses(Long id) {
+		Optional<Classes> optionalClasses= classRepo.findById(id);
+		if(optionalClasses.isPresent()) {
+			return optionalClasses.get();
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public Classes updateClasses(Classes c) {
+		return classRepo.save(c);
+	}
+	
+	
+	public void deleteClasses(Long id) {
+		classRepo.deleteById(id);
+	}
+	
+	public List<Classes> findClassesNotEnrolled(Student s){
+		return classRepo.findByStudentsNotContains(s);
+	}
+
 }

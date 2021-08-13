@@ -2,12 +2,18 @@ package com.sasayaki7.studentroster.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.sasayaki7.studentroster.models.Classes;
 import com.sasayaki7.studentroster.models.Contact;
 import com.sasayaki7.studentroster.models.Dorm;
 import com.sasayaki7.studentroster.models.Student;
@@ -87,5 +93,56 @@ public class MainController {
 		Student s = api.findStudent(studentId);
 		api.addDorm(s, api.findDorm(id));
 		return "redirect:/dorms/"+id;
+	}
+	
+	@RequestMapping("/classes/new")
+	public String showClassForm(Model model) {
+		model.addAttribute("class", new Classes());
+		return "classform.jsp";
+	}
+	
+	@RequestMapping(value="/classes/new", method=RequestMethod.POST)
+	public String submitClass(@Valid @ModelAttribute("class") Classes cls, BindingResult result) {
+		if (result.hasErrors()) {
+			return "classform.jsp";
+		}
+		else {
+			Classes c = api.createClass(cls);
+			return "redirect:/classes/"+c.getId();
+		}
+	}
+	
+	@RequestMapping("/classes/{id}")
+	public String showClassInfo(@PathVariable("id") Long id, Model model) {
+		Classes c = api.findClasses(id);
+		model.addAttribute("classes", c);
+		return "classdashboard.jsp";
+	}
+	
+	
+	@RequestMapping(value="/students/{id}/addClass/", method=RequestMethod.POST)
+	public String addClass(@PathVariable("id") Long id, @RequestParam("classes") Long classId) {
+		Classes c = api.findClasses(classId);
+		Student s = api.findStudent(id);
+		s.getClasses().add(c);
+		api.updateStudent(s);
+		return "redirect:/students/"+id;
+	}
+	
+	@RequestMapping(value="/students/{id}/removeClass/", method=RequestMethod.POST)
+	public String dropClass(@PathVariable("id") Long id, @RequestParam("classes") Long classId) {
+		Classes c = api.findClasses(classId);
+		Student s = api.findStudent(id);
+		s.getClasses().remove(c);
+		api.updateStudent(s);
+		return "redirect:/students/"+id;
+	}
+	
+	@RequestMapping(value="/students/{id}")
+	public String showStudent(@PathVariable("id") Long id, Model model) {
+		Student s = api.findStudent(id);
+		model.addAttribute("student", s);
+		model.addAttribute("unenrolledclasses", api.findClassesNotEnrolled(s));
+		return "showstudent.jsp";
 	}
 }

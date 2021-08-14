@@ -24,9 +24,7 @@ public class ApiServices {
 		return dojoRep.findAll();
 	}
 	
-	public List<Ninja> findAllNinjas(){
-		return ninjaRep.findAll();
-	}
+
 	
 	public Ninja getNinja(Long id) {
 		Optional<Ninja> tempNinja = ninjaRep.findById(id);

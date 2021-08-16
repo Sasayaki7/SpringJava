@@ -1,5 +1,6 @@
 package com.sasayaki7.dojooverflow.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,24 @@ public class ApiService {
 		else {
 			return null;
 		}
+	}
+	
+	
+	public Question createQuestionWithTags(String text, List<String> tags) {
+	
+		Question q = this.createQuestion(new Question(text));
+		List<Tags> tagsLists = new ArrayList<Tags>();
+		for (String subject: tags) {
+			if (this.tagExists(subject)) {
+				tagsLists.add(this.getTagBySubject(subject));
+			}
+			else {
+				Tags newTag = this.createTag(new Tags(subject));
+				tagsLists.add(newTag);
+			}
+		}
+		q.setTags(tagsLists);
+		return this.updateQuestion(q);
 	}
 	
 	public List<Question> allQuestions(){
@@ -103,5 +122,7 @@ public class ApiService {
 			return null;
 		}
 	}
+	
+	
 	
 }

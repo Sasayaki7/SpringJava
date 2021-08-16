@@ -70,19 +70,7 @@ public class OverflowController {
 			return "redirect:/questions/new";
 		}
 		else {
-			Question q = api.createQuestion(new Question(text));
-			List<Tags> tagsLists = new ArrayList<Tags>();
-			for (String subject: tagsList) {
-				if (api.tagExists(subject)) {
-					tagsLists.add(api.getTagBySubject(subject));
-				}
-				else {
-					Tags newTag = api.createTag(new Tags(subject));
-					tagsLists.add(newTag);
-				}
-			}
-			q.setTags(tagsLists);
-			api.updateQuestion(q);
+			api.createQuestionWithTags(text, tagsList);
 			return "redirect:/questions";
 		}
 	}

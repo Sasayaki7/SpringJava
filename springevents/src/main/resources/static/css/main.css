@@ -1,0 +1,14 @@
+@charset "ISO-8859-1";
+
+.input-row{
+	display: flex;
+}
+
+.box{
+	border: 1px solid black;
+}
+
+.message-box{
+	height: 500px;
+	overflow-y: scroll;
+}
